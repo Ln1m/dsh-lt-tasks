@@ -8,7 +8,7 @@
 
 ## 界面
 
-![Tasks 视图](docs/screenshot.png)
+![Tasks 视图](https://cdn.jsdelivr.net/gh/Ln1m/dsh-lt-tasks@main/docs/screenshot.png)
 
 ## 功能
 

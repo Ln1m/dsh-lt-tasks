@@ -8,7 +8,7 @@ A task is a persistent folder (11 archived documents + a minimal handoff index +
 
 ## Screenshot
 
-![Tasks view](docs/screenshot.png)
+![Tasks view](https://cdn.jsdelivr.net/gh/Ln1m/dsh-lt-tasks@main/docs/screenshot.png)
 
 ## Features
 
