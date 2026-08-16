@@ -22,6 +22,7 @@ A task is a persistent folder (11 archived documents + a minimal handoff index +
 - **Progress tracking**: tasklist checkboxes auto-count done/total.
 - **Frontend view**: a "Tasks" tab in the left sidebar — grouped collapsible list, search, slide-in detail drawer, inline editing, status dropdown.
 - **Task↔session link**: advancing records the session; opening a task detail auto-opens that conversation.
+- **Composer prefill**: the "＋" new-task button and the detail "＋ new chat" button prefill a hint into the composer (`请帮我新建一个长期任务：` / `推进长期任务 xxx`) without auto-sending; you add your requirements and send.
 - **Self-growth**: on completion, generates an archive suggestion for confirmation before writing to skills.
 
 ## Install
