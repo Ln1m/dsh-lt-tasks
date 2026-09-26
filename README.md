@@ -42,7 +42,8 @@
 
 | 变量 | 默认 | 说明 |
 |---|---|---|
-| `DSH_LT_TASKS_ROOT` | `~/.dsh/lt-tasks/` | 任务库根目录（管理文档） |
+| `DSH_LT_TASKS_ROOT` | `~/.dsh/lt-tasks/` | 任务库根目录（内部约定 / 管理文档） |
+| `DSH_LT_WS_ROOT` | `D:\Desktop\DSHlongtasks` | 产出工作区根目录（实际产出，桌面侧） |
 | `DSH_LT_TASKS_LOCK_TTL` | `24` | 锁超时（小时） |
 
 ## 用法
@@ -62,16 +63,35 @@
 
 典型流程：`create_task` →（筹划）→ `advance_task` → 工作 → `save_progress` → … → `complete_task`。
 
-## 目录结构
+## 目录结构（产出与内部约定分离）
 
 ```
-<DSH_LT_TASKS_ROOT>/<任务名>/
+<DSH_LT_TASKS_ROOT>/<任务名>/          # 内部约定（任务库，存管理文档）
   meta.md / handoff.md / goal.md / frozen.md / tasklist.md / next.md /
   progress.md / refs.md / index.md / errors.md / blockers.md / review.md
   .lock
-  works/v1, v2, ...   # 产出（按迭代版本，各窗口共享）
-  refs/               # 参考资料（只读）
+
+<DSH_LT_WS_ROOT>/lt-task-NNN-<主题>/   # 实际产出（桌面工作区，与会话文件夹同编号规则）
+  ...产出文件...
+  refs/                                # 参考资料（只读）
 ```
+
+任务库只存「内部约定」（11 文档 + 锁）；实际产出一律落在桌面产出工作区 `lt-task-NNN-<主题>` 文件夹（NNN 为已有序号 + 1，独立编号）。`handoff.md` / `index.md` 记录产出区路径，创建任务后请把文件树切到产出区（`switch_workspace_root`）再开工。
+
+## 版本快照与回退（备份规则）
+
+每次存档（`save_progress`，版本 +1）自动在**对应产出工作区**内同步生成完整版本快照，无需手动备份，可随时回退：
+
+- **快照路径**：`<产出工作区>/backups/v<N>/`（N = 版本号；`create_task` 时自动生成 **v1 基线**）
+  - `task-docs/` —— 该版本的任务库 11 文档 + `meta.md`
+  - `workspace/` —— 该版本的工作区全部产出文件（自动排除 `backups/` 自身，不嵌套）
+- `save_progress` 返回值带 `backupPath`，即本次快照目录。
+- **版本链连续**：v1（创建）→ v2（首次存档）→ … → vN（最新），每一存档点独立完整，互不覆盖。
+- **回退方法**：
+  - 产出文件回退：把 `backups/v<N>/workspace/` 下文件复制回工作区根覆盖即可。
+  - 任务库文档回退：把 `backups/v<N>/task-docs/` 下文件复制回 `<DSH_LT_TASKS_ROOT>/<任务名>/` 覆盖（连 `meta.md` 一起覆盖即回到当时版本号）。
+- **空间说明**：快照为全量复制（非增量），占用 ≈ 工作区产出体积 × 推进次数；工作区以文档/代码为主（仿真大文件请留在 `D:\PLECS-Tools` 等自有目录，勿放入工作区）。
+- **删除任务**（`delete_task`）会连同工作区 `backups/` 一并删除、不另行保留 —— 删除前会先列明细经你确认。
 
 ## 开发
 

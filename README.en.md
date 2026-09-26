@@ -42,7 +42,8 @@ A task is a persistent folder (11 archived documents + a minimal handoff index +
 
 | Var | Default | Meaning |
 |---|---|---|
-| `DSH_LT_TASKS_ROOT` | `~/.dsh/lt-tasks/` | task library root (management docs) |
+| `DSH_LT_TASKS_ROOT` | `~/.dsh/lt-tasks/` | task library root (management docs / internal contract) |
+| `DSH_LT_WS_ROOT` | `D:\Desktop\DSHlongtasks` | output workspace root (actual artifacts, desktop side) |
 | `DSH_LT_TASKS_LOCK_TTL` | `24` | lock expiry (hours) |
 
 ## Tools (9)
@@ -60,16 +61,33 @@ A task is a persistent folder (11 archived documents + a minimal handoff index +
 
 Typical flow: `create_task` → (plan) → `advance_task` → work → `save_progress` → … → `complete_task`.
 
-## Directory layout
+## Directory layout (outputs separated from internal contract)
 
 ```
-<DSH_LT_TASKS_ROOT>/<task>/
+<DSH_LT_TASKS_ROOT>/<task>/          # internal contract (task library: management docs)
   meta.md / handoff.md / goal.md / frozen.md / tasklist.md / next.md /
   progress.md / refs.md / index.md / errors.md / blockers.md / review.md
   .lock
-  works/v1, v2, ...   # outputs per iteration (shared across windows)
-  refs/               # references (read-only)
+
+<DSH_LT_WS_ROOT>/lt-task-NNN-<topic>/   # actual outputs (desktop workspace, same numbering rule as session folders)
+  ...artifact files...
+  refs/                              # references (read-only)
 ```
+
+The task library holds only the internal contract (11 docs + lock). All actual outputs live in the desktop workspace folder `lt-task-NNN-<topic>` (NNN = last sequence + 1, independent numbering). `handoff.md` / `index.md` record the workspace path; after creating a task, switch the file tree to the output folder (`switch_workspace_root`) before working.
+
+## Version snapshots & rollback (backup rule)
+
+Every `save_progress` (version +1) automatically writes a full version snapshot **inside the task's workspace**, so you can roll back any time:
+
+- **Snapshot path**: `<workspace>/backups/v<N>/` (N = version; `create_task` writes the **v1 baseline**)
+  - `task-docs/` — the 11 task-library docs + `meta.md` of that version
+  - `workspace/` — a full copy of that version's artifacts (auto-excludes `backups/` itself)
+- `save_progress` returns `backupPath` pointing at the new snapshot.
+- **Continuous chain**: v1 (create) → v2 (first save) → … → vN (latest); every snapshot is standalone and never overwritten.
+- **Rollback**: copy files back from `backups/v<N>/workspace/` to the workspace root, and/or from `backups/v<N>/task-docs/` to `<DSH_LT_TASKS_ROOT>/<task>/` (overwriting `meta.md` restores that version number).
+- **Size note**: snapshots are full copies (not incremental), so disk usage ≈ artifacts × save count; keep the workspace doc/code-focused (leave huge simulation data in its own dirs, e.g. `D:\PLECS-Tools`).
+- **Deleting a task** (`delete_task`) removes the workspace `backups/` too — nothing is kept separately; confirm the itemized list before deleting.
 
 ## Development
 
