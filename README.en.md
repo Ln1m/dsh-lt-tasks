@@ -1,6 +1,6 @@
-> A vk-free build lives on the [https://github.com/Ln1m/dsh-lt-tasks/tree/official](https://github.com/Ln1m/dsh-lt-tasks/tree/official); main is the dual-path version (official slots without vk-suite, vk layout seats with it).
-
 # dsh-lt-tasks
+
+> A vk-free build lives on the [https://github.com/Ln1m/dsh-lt-tasks/tree/official](https://github.com/Ln1m/dsh-lt-tasks/tree/official); main is the dual-path version (official slots without vk-suite, vk layout seats with it).
 
 Multi-window, long-running task management plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness).
 
