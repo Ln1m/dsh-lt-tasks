@@ -41,9 +41,9 @@
                        "type":  "git",
                        "url":  "git+https://github.com/Ln1m/dsh-lt-tasks.git"
                    },
-    "homepage":  "https://github.com/Ln1m/dsh-lt-tasks#readme",
+    "homepage":  "https://github.com/Ln1m/dsh-side-tasks#readme",
     "bugs":  {
-                 "url":  "https://github.com/Ln1m/dsh-lt-tasks/issues"
+                 "url":  "https://github.com/Ln1m/dsh-side-tasks/issues"
              },
     "keywords":  [
                      "dsh",
